@@ -22,6 +22,11 @@ G= √(G_x^2+G_y^2 ). The gradient magnitude, G, was dilated and normalised betw
 
 **[4]**
 
+# Usage
+To use this pipeline, a tutorial notebook for training of the artifact classification model, based on our application case described below, is provided in (____). The __ notebook then details generation of artifact labels of the images with Score-CAM, which are used to train the artifact segmentation UNET model in the ____ notebook. The weights for these trained models from our own application are also provided in the weights folder and could be used to initialise these models for re-training on new datasets.
+
+A notebook tutorial for usage of the trained models for artifact segmentation of a toy dataset is then provided in _____.
+
 # Application Example
 This implementation was produced to enable masking of widespread artifacts in a large-scale brightfield microscopy dataset of SA-β-Gal stained Mesenchymal Stem Cells (MSCs) to allow for accurate staining quantification. As SA-β-Gal staining intensity presents as dark pixels on a light background when imaged with brightfield microscopy, removal of the variety of artifacts present in these images was essential for performing accurate quantification. SA-β-Gal levels in each cell were then used to automate per-cell labelling of cellular senescence in corresponding nuclei imaging, for training of an image-based senescence classification model. Details and code for the segmentation, automated labelling pipeline and classification model are provided in _____.
 
