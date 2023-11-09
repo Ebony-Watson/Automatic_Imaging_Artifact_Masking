@@ -12,8 +12,7 @@ For the artifact-segmentation pipeline described in Ali _et al._ (2022), a CNN m
 The implementation of UNET used in my pipeline is based on _______ available at ___________.
 
 In deviation from the original Score-CAM-U-Net pipeline from Ali _et al._ (2022), the final saliency map produced by Score-CAM for each image was further fine-tuned in this implementation using an edge map. To generate the edge map, horizontal (Gx) and vertical image gradients (Gy) were computed on the original input image and then combined to give the gradient magnitude, using:
-G= √(G_x^2+G_y^2 )
-The gradient magnitude, G, was dilated and normalised between 0 and 1 to produce the edge map. The edge map for an image was then multiplied against its corresponding Score-CAM saliency map, producing a more defined outline of the predicted artifact locations. These fine-tuned saliency maps were then binarized to produce the artifact label masks for training of the U-Net segmentation model. This idea was based on ___________ [4].
+G= √(G_x^2+G_y^2 ). The gradient magnitude, G, was dilated and normalised between 0 and 1 to produce the edge map. The edge map for an image was then multiplied against its corresponding Score-CAM saliency map, producing a more defined outline of the predicted artifact locations. These fine-tuned saliency maps were then binarized to produce the artifact label masks for training of the U-Net segmentation model. This idea was based on ___________ [4].
 
 **[1]** Ali, M.A.S., Hollo, K., Laasfeld, T. et al. ArtSeg—Artifact segmentation and removal in brightfield cell microscopy images without manual pixel-level annotations. Sci Rep 12, 11404 (2022). https://doi.org/10.1038/s41598-022-14703-y
 
