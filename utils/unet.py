@@ -15,7 +15,7 @@ from tensorflow.keras.layers import Input, Conv2D, Conv2DTranspose, MaxPool2D, A
 
 
 def configuration(num_filters_start = 64,num_unet_blocks = 5,num_filters_end = 1,input_width = 576,input_height = 576,mask_width = 576,mask_height = 576,input_dim = 1,optimizer = Adam(lr=0.002),
-                 loss = BinaryCrossentropy,initializer = HeNormal(),batch_size = 4, num_epochs = 150,metrics = ['BinaryIoU','accuracy'],dataset_path = None):
+                 loss = BinaryCrossentropy,initializer = HeNormal(seed=0),batch_size = 4, num_epochs = 150,metrics = ['BinaryIoU','accuracy'],dataset_path = None):
     ''' Get configuration for UNET. '''
 
     return dict(
@@ -178,11 +178,11 @@ def build_unet():
     return model
 
 
-def init_model(steps_per_epoch):
+def init_model(config=configuration()): #steps_per_epoch=None
     '''
         Initialize a U-Net model.
     '''
-    config = configuration()
+    config = config
     model = build_unet()
 
     # Retrieve compilation input
@@ -276,7 +276,7 @@ class DataGenerator(keras.utils.Sequence):
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
             img = cv2.imread(PATH + '/images/' + ID, -1)#[:,:,:IMG_CHANNELS]
-            img = (img/256).astype('uint8')
+            img = (img / 256).astype('uint8')
             img = np.expand_dims(img, axis=-1)
             X[i,] = img
             
@@ -288,3 +288,54 @@ class DataGenerator(keras.utils.Sequence):
             y[i] = mask_
 
         return X, y #keras.utils.to_categorical(y, num_classes=self.n_classes)
+    
+
+class DataGenerator_Pred(keras.utils.Sequence):
+    'Generates data for Keras'
+    def __init__(self, list_IDs, batch_size=1, dim=(576,576), n_channels=1,
+                 n_classes=1, shuffle=True, PATH=None):
+        'Initialization'
+        self.dim = dim
+        self.batch_size = batch_size
+        self.PATH = PATH
+        self.list_IDs = list_IDs
+        self.n_channels = n_channels
+        self.n_classes = n_classes
+        self.on_epoch_end()
+
+    def __len__(self):
+        'Denotes the number of batches per epoch'
+        return int(np.floor(len(self.list_IDs) / self.batch_size))
+
+    def __getitem__(self, index):
+        'Generate one batch of data'
+        # Generate indexes of the batch
+        indexes = self.indexes[index*self.batch_size:(index+1)*self.batch_size]
+
+        # Find list of IDs
+        list_IDs_temp = [self.list_IDs[k] for k in indexes]
+
+        # Generate data
+        X = self.__data_generation(list_IDs_temp)
+
+        return X
+
+    def on_epoch_end(self):
+        'Updates indexes after each epoch'
+        self.indexes = np.arange(len(self.list_IDs))
+
+    def __data_generation(self, list_IDs_temp):
+        'Generates data containing batch_size samples' # X : (n_samples, *dim, n_channels)
+        # Initialization
+        
+        X = np.empty((self.batch_size, *self.dim, self.n_channels))
+        PATH = self.PATH
+        # Generate data
+        for i, ID in enumerate(list_IDs_temp):
+            # Store sample
+            img = cv2.imread(PATH + ID,-1)#[:,:,:IMG_CHANNELS]
+            img = (img/256).astype('uint8')
+            img = np.expand_dims(img, axis=-1)
+            X[i,] = img
+
+        return X #keras.utils.to_categorical(y, num_classes=self.n_classes)

@@ -1,3 +1,5 @@
+import os
+import cv2
 import numpy as np
 import tensorflow as tf
 import keras
@@ -6,6 +8,14 @@ from tensorflow.keras.applications.resnet50 import preprocess_input,ResNet50
 from tensorflow.keras.layers import Dense, Input, Activation, GlobalAveragePooling2D
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
+
+def data_resize(width=576,height=576,ftype='.tiff',load_dir=None,save_dir=None):
+    for file in os.listdir(load_dir):
+        image_path = os.path.join(load_dir,file)
+        image_n = file.split('.')[0]
+        im = cv2.imread(image_path, -1)
+        im = cv2.resize(im, (width, height),interpolation = cv2.INTER_AREA)
+        cv2.imwrite(os.path.join(save_dir, f'{image_n}_{width}x{height}{ftype}'), im)
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
@@ -87,7 +97,7 @@ class DataGenerator(keras.utils.Sequence):
             # Store sample
                 img = load_img('/'.join([PATH, ID]), color_mode='grayscale', target_size=self.dim)
                 img = img_to_array(img)
-                img = np.uint8(img/ 256)
+                img = np.uint8(img/256)
                 img = np.repeat(img[:,:, :], 3, -1)
                 #img = np.expand_dims(img, axis=0)
                 img = preprocess_input(img)
@@ -148,7 +158,7 @@ class DataGenerator_Pred(keras.utils.Sequence):
             # Store sample
                 img = load_img('/'.join([PATH, ID]), color_mode='grayscale', target_size=self.dim)
                 img = img_to_array(img)
-                img = np.uint8(img/ 256)
+                img = np.uint8(img/256)
                 img = np.repeat(img[:,:, :], 3, -1)
                 #img = np.expand_dims(img, axis=0)
                 img = preprocess_input(img)
