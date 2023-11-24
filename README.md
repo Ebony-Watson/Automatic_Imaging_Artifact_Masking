@@ -1,7 +1,7 @@
 # Automatic_Imaging_Artifact_Masking
 Data cleaning via automated artifact masking in high-throughput microscopy imaging.
 
-This is an _**adaptation**_  of the Score-CAM-U-Net artifact masking pipeline which is described in, but not currently made available by, the paper: **ArtSeg-Artifact segmentation and removal in brightfield cell microscopy images without manual pixel-level annotations (2022)** [1]. 
+This is an **adaptation**  of the Score-CAM-U-Net artifact masking pipeline which is described in, but not currently made available by, the paper: **ArtSeg-Artifact segmentation and removal in brightfield cell microscopy images without manual pixel-level annotations (2022)** [1]. 
 
 This pipeline makes use of Score-CAM [2], a technique for improving interpretability of deep-learning image classifiers, by producing visual explanations of the features relevant to model predictions. When applied to a trained classification model, Score-CAM extracts the learned features (activation maps) from the final convolutional layer, projecting each onto a separate copy of the original input image to highlight that particular feature. These projected images are then fed as separate inputs to the trained model, with the resulting target-class probabilities acting as scores of each features importance. Linear combination of each features activation map and their respective scores is then performed to create a final activation map, which is passed through a ReLU activation function to retain only the features with a positive influence on prediction of the target class. Accordingly, the final output from Score-CAM for a provided image is a saliency map highlighting image regions most influential for prediction of the target class.
 
