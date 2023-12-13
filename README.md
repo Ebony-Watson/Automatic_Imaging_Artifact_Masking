@@ -38,7 +38,5 @@ Images correctly classified as containing artifacts by this model (1,300 of the 
 
 The U-Net model trained on the Score-CAM artifact labels was able to identify and segment artifacts in the data reliably, achieving an overall pixel-wise accuracy of 99.2% and Intersection Over Union  (IOU) of 81.2% on the held-out test data (_n_ pixels = 87,920,640). As expected, performance for the Artifact-Containing class (F1 = 78%, Recall = 75% , precision= 80%) is lower than for the Clean class (all metrics = 100%), which dominates the dataset.
 
-![Performance](imgs/Figure_5.png)
-
 The segmentation masks produced by the trained U-Net model were then applied to the corresponding (illumination-corrected) SA-β -Gal -stained images, with pixel values of masked regions replaced with the median value of the SA-β -Gal image. After masking of image artifacts in the SA-β -Gal stained images, thresholding was performed to produce a binary image of SA-β -Gal staining intensity for quantification. See the Senescence_Classifier Repo for further information regarding the automated labelling pipeline & development of senescence classification models.
 
