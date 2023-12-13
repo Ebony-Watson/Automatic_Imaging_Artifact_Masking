@@ -28,16 +28,17 @@ This implementation was produced to enable masking of widespread artifacts in a 
 
 The SA-β-Gal stained MSCs were imaged in brightfield with the Operetta system using the 40x air objective to produce a total of 13,860 images. Artifacts of some form, including general debris, blurry objects and SA-β-Gal crystals, were present across 96.3% of the total dataset according to the trained artifact classifier.
 
-![image](https://github.com/Ebony-Watson/Automatic_Imaging_Artifact_Masking/assets/52723545/d3f879e2-e70f-4d0c-bdee-330add47eb11)
+![Artifacts](imgs/Figure_3.png)
 
-
-![image](https://github.com/Ebony-Watson/Automatic_Imaging_Artifact_Masking/assets/52723545/09482d53-d84b-4fb0-a5a4-0cc54dc85738)
+![Framework](imgs/Figure_4.png)
 
 For this implementation of the Score-CAM-U-Net framework, I used the ResNet50 CNN architecture to train a model on a subset of SA-β -Gal images (n = 2,024) for classification as Clean or Artifact-Containing (ResNet50_Artifact_Classifier.ipynb). When evaluated on the held-out test data (n = 403), the trained model demonstrated strong performance for both Clean (F1 score = 97%) and Artifact-Containing (F1 score = 98%) classes. 
 
 Images correctly classified as containing artifacts by this model (1,300 of the 1,327 in the dataset) were then fed to the Score-CAM framework to perform weakly-supervised pixel-wise labelling of the artifacts, which were further refined using an edge-map as described above (Score-CAM.ipynb). These fine-tuned saliency maps were then binarized to produce the artifact label masks for training of the U-Net segmentation model (Artifact_Segmentation_UNET.ipynb). 
 
 The U-Net model trained on the Score-CAM artifact labels was able to identify and segment artifacts in the data reliably, achieving an overall pixel-wise accuracy of 99.2% and Intersection Over Union  (IOU) of 81.2% on the held-out test data (_n_ pixels = 87,920,640). As expected, performance for the Artifact-Containing class (F1 = 78%, Recall = 75% , precision= 80%) is lower than for the Clean class (all metrics = 100%), which dominates the dataset.
+
+![Performance](imgs/Figure_5.png)
 
 The segmentation masks produced by the trained U-Net model were then applied to the corresponding (illumination-corrected) SA-β -Gal -stained images, with pixel values of masked regions replaced with the median value of the SA-β -Gal image. After masking of image artifacts in the SA-β -Gal stained images, thresholding was performed to produce a binary image of SA-β -Gal staining intensity for quantification. See the Senescence_Classifier Repo for further information regarding the automated labelling pipeline & development of senescence classification models.
 
